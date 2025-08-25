@@ -3,7 +3,7 @@ import { defineOneEntry } from "oneentry";
 import type { IError } from "oneentry/dist/base/utils";
 
 // Import helper functions for handling refresh tokens
-import retreiveRefreshToken from "@/actions/auth/retreiveRefreshToken";
+import retrieveRefreshToken from "@/actions/auth/retreiveRefreshToken";
 import storeRefreshToken from "@/actions/auth/storeRefreshToken";
 
 // Define the type for the API client, which can initially be `null`
@@ -11,7 +11,6 @@ export type ApiClientType = ReturnType<typeof defineOneEntry> | null;
 
 // Declare a variable to hold the API client instance, initially set to `null`
 let apiClient: ApiClientType = null;
-
 /**
  * Function to initialize the API client with a custom configuration.
  * This function ensures the client is created only once and reuses the same instance.
@@ -19,7 +18,7 @@ let apiClient: ApiClientType = null;
 async function setupApiClient(): Promise<ReturnType<typeof defineOneEntry>> {
   // Retrieve the API URL from environment variables
   const apiUrl = process.env.ONEENTRY_PROJECT_URL;
-
+  console.log("urllll", apiUrl);
   // Throw an error if the API URL is not defined
   if (!apiUrl) {
     throw new Error("ONEENTRY_PROJECT_URL is missing");
@@ -29,11 +28,11 @@ async function setupApiClient(): Promise<ReturnType<typeof defineOneEntry>> {
   if (!apiClient) {
     try {
       // Retrieve the refresh token (if available) from storage
-      const refreshToken = await retreiveRefreshToken();
+      const refreshToken = await retrieveRefreshToken();
 
       // Create a new instance of the API client with the required configuration
       apiClient = defineOneEntry(apiUrl, {
-        token: process.env.ONENETRY_TOKEN, // Token for authentication
+        token: process.env.ONEENTRY_TOKEN, // Token for authentication
         langCode: "en_US", // Language code for the API
         auth: {
           refreshToken: refreshToken || undefined, // Use the retrieved refresh token or `undefined`
